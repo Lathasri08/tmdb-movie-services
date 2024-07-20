@@ -3,6 +3,8 @@ package com.example.tmdb.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.tmdb.exception.InvalidDataException;
+import com.example.tmdb.exception.NotFoundException;
 import com.example.tmdb.model.Movie;
 import com.example.tmdb.repo.MovieRepo;
 
@@ -18,7 +20,7 @@ public class MovieService {
 	public Movie create(Movie movie) {
 		
 		if(movie==null) {
-			throw new RuntimeException("Invalid movie");
+			throw new InvalidDataException("Invalid movie");
 		}
 		return movieRepository.save(movie);	
 	}
@@ -26,13 +28,13 @@ public class MovieService {
 	public Movie read(Long id) {
 		
 		return movieRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Movie not found"));
+				.orElseThrow(() -> new NotFoundException("Movie not found"));
 	}
 	
 	public void update(Long id, Movie updatedMovie) {
 		
 		if(updatedMovie==null || id==null) {
-			throw new RuntimeException("Invalid movie");
+			throw new InvalidDataException("Invalid movie");
 		}
 		
 		//movie exits or not
@@ -43,7 +45,7 @@ public class MovieService {
 			movie.setActors(updatedMovie.getActors());
 			movieRepository.save(movie);
 		}else {
-			throw new RuntimeException("Movie not found");
+			throw new NotFoundException("Movie not found");
 		}
 	}
 	
@@ -52,7 +54,7 @@ public class MovieService {
 		if(movieRepository.existsById(id)) {
 			movieRepository.deleteById(id);
 		}else {
-			throw new RuntimeException("Movie not found");
+			throw new NotFoundException("Movie not found");
 		}
 	}
 }
